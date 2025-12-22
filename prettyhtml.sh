@@ -1,4 +1,4 @@
-C#!/bin/bash
+#!/bin/bash
 
 filename=$1
 
