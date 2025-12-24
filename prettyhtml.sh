@@ -2,12 +2,10 @@
 
 file=$1
 
-if [ ! -f "$file" ]; then
-        echo "$file does not exist."
+if [ ! -f "$filename" ]; then
+	echo "$filename does not exist."
+else
+	text=$(cat "$filename")
+	echo "$text"
 fi
-
-
-read filename
-text=$(cat "$filename")
-echo $text
 
