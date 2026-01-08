@@ -8,22 +8,24 @@ if [ ! -f "$filename" ]; then
 fi
 
 indent=0
- 
-sed -E '
-s/></>\n</g
-s/>([^<[:space:]][^<]*)</>\n\1\n</g
-/^[[:space:]]*$/d
-' "$filename"
+space=3
 
-while read line; do
-	if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]]; then
-		indent=$((indent + 1))
-		echo "$indent"
-	fi
+#s/</\n</g
+#s/>([^<[:space:]][^<]*)</>\n\1\n</g
+#s/([^[:space:]])(<[^>]+>)/\1\n\2\n/g
+##s/(>)([^<]+)/\1\n\2\n/g
+#s/([^>])(<)/\1\n\2/g 
+sed -E '
+s/(<[^>]+>)/\n\1\n/g
+#/^[[:space:]]*$/d
+' "$filename" | while read line; do
 	if [[ "$line" == "</"* ]]; then
 		indent=$((indent - 1))
-		echo "$indent"
 	fi
-done < "$filename"
 
+	printf "%*s%s\n" $((indent*space)) "" "$line"
 
+	if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]]; then
+                indent=$((indent + 1))
+        fi
+done
