@@ -3,29 +3,30 @@
 filename=$1
 
 if [ ! -f "$filename" ]; then
-	echo "$filename does not exist."
-	exit
+        echo "$filename does not exist."
+        exit
 fi
 
 indent=0
-space=3
 
-#s/</\n</g
-#s/>([^<[:space:]][^<]*)</>\n\1\n</g
-#s/([^[:space:]])(<[^>]+>)/\1\n\2\n/g
-##s/(>)([^<]+)/\1\n\2\n/g
-#s/([^>])(<)/\1\n\2/g 
 sed -E '
 s/(<[^>]+>)/\n\1\n/g
-#/^[[:space:]]*$/d
 ' "$filename" | while read line; do
-	if [[ "$line" == "</"* ]]; then
-		indent=$((indent - 1))
+	if [ -z "$line" ]; then
+		continue
 	fi
 
-	printf "%*s%s\n" $((indent*space)) "" "$line"
+        if [[ "$line" == "</"* ]]; then
+                indent=$((indent - 1))
+        fi
 
-	if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]]; then
+	for ((i=0; i<indent; i++)); do
+    		echo -n "   "
+	done
+	echo "$line"
+
+        if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]] &&
+	   [[ "$line" != "<img"* ]] && [[ "$line" != "<link"* ]] && [[ "$line" != "<meta"* ]] && [[ "$line" != "<input"* ]]; then
                 indent=$((indent + 1))
         fi
 done
