@@ -9,25 +9,24 @@ fi
 
 indent=0
 
-#s/</\n</g
-#s/>([^<[:space:]][^<]*)</>\n\1\n</g
-#s/([^[:space:]])(<[^>]+>)/\1\n\2\n/g
-##s/(>)([^<]+)/\1\n\2\n/g
-#s/([^>])(<)/\1\n\2/g 
 sed -E '
 s/(<[^>]+>)/\n\1\n/g
 ' "$filename" | while read line; do
+	if [ -z "$line" ]; then
+		continue
+	fi
 
         if [[ "$line" == "</"* ]]; then
                 indent=$((indent - 1))
         fi
 
 	for ((i=0; i<indent; i++)); do
-    		echo -n "    "
+    		echo -n "   "
 	done
 	echo "$line"
 
-        if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]]; then
+        if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]] &&
+	   [[ "$line" != "<img"* ]] && [[ "$line" != "<link"* ]] && [[ "$line" != "<meta"* ]] && [[ "$line" != "<input"* ]]; then
                 indent=$((indent + 1))
         fi
 done
