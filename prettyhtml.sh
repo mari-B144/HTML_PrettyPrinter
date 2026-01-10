@@ -3,8 +3,8 @@
 filename=$1
 
 if [ ! -f "$filename" ]; then
-        echo "$filename does not exist."
-        exit
+	echo "$filename does not exist."
+	exit
 fi
 
 indent=0
@@ -16,17 +16,17 @@ s/(<[^>]+>)/\n\1\n/g
 		continue
 	fi
 
-        if [[ "$line" == "</"* ]]; then
-                indent=$((indent - 1))
-        fi
+	if [[ "$line" == "</"* ]]; then
+		indent=$((indent - 1))
+	fi
 
 	for ((i=0; i<indent; i++)); do
-    		echo -n "   "
+		echo -n "   "
 	done
 	echo "$line"
 
-        if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]] &&
+	if [[ "$line" == "<"* ]] && [[ "$line" != "</"* ]] && [[ "$line" != "<!"* ]] && [[ "$line" != *"/>" ]] &&
 	   [[ "$line" != "<img"* ]] && [[ "$line" != "<link"* ]] && [[ "$line" != "<meta"* ]] && [[ "$line" != "<input"* ]]; then
-                indent=$((indent + 1))
-        fi
+		indent=$((indent + 1))
+	fi
 done
